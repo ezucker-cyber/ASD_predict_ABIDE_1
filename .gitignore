@@ -1,0 +1,17 @@
+# Ignore everything by default
+*
+
+# But include these specific files
+!.gitignore
+!feature_extraction.py
+!METHODOLOGY_nested_optimization.md
+!nested_optimization.py
+!requirements.txt
+
+# Ignore directories
+asd_pred_venv/
+venv/
+__pycache__/
+.vscode/
+.idea/
+.DS_Store
