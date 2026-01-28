@@ -5,8 +5,10 @@
 !.gitignore
 !feature_extraction.py
 !METHODOLOGY_nested_optimization.md
+!METHODOLOGY_permutation_test.md
 !nested_optimization.py
 !requirements.txt
+!05_permutation_test.py
 
 # Ignore directories
 asd_pred_venv/
