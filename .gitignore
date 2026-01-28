@@ -11,6 +11,10 @@
 !05_permutation_test.py
 !permutation_test_results_n50.png
 !nested_cv_results.png
+!nested_cv_roc_curves.png
+!nested_cv_confusion_matrices.png
+!nested_cv_site_comparison.png
+!nested_cv_site_performance.png
 
 # Ignore directories
 asd_pred_venv/

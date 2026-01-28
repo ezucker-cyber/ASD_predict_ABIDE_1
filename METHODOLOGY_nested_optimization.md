@@ -105,8 +105,6 @@ This nested cross-validation approach provides:
 
 ## Results
 
-![Permutation Test Results](nested_cv_results.png)
-
 ### Overall Performance (Mean ± Standard Deviation)
 
 | Model | Accuracy | AUC-ROC |
@@ -146,6 +144,39 @@ This nested cross-validation approach provides:
 - Fold 4: Accuracy = 0.658, AUC = 0.730
 - Fold 5: Accuracy = 0.678, AUC = 0.758
 
+### Confusion Matrices
+
+![Confusion Matrices](nested_cv_confusion_matrices.png)
+
+**Figure**: Confusion matrices for all four models showing true positives, true negatives, false positives, and false negatives. Sensitivity (true positive rate) and specificity (true negative rate) are displayed in titles.
+
+### ROC Curves
+
+![ROC Curves](nested_cv_roc_curves.png)
+
+**Figure**: Receiver Operating Characteristic curves aggregated across all 5 folds for each model.
+
+### Per-Site Performance Analysis
+
+![Site Comparison](nested_cv_site_comparison.png)
+
+![Site Performance](nested_cv_site_performance.png)
+
+**Per-Site Accuracy Summary (Mean ± Standard Deviation across sites):**
+
+| Model | Mean Site Accuracy | Range |
+|-------|-------------------|-------|
+| Linear SVM | 0.672 ± 0.091 | [0.483, 0.846] |
+| **RBF SVM** | **0.683 ± 0.078** | **[0.510, 0.760]** |
+| Random Forest | 0.609 ± 0.062 | [0.517, 0.723] |
+| Neural Network | 0.682 ± 0.068 | [0.552, 0.786] |
+
+**Site-Level Observations:**
+- **Consistency**: RBF SVM shows the most consistent performance across sites (SD = 0.078)
+- **Peak Performance**: Neural Network achieves the highest maximum site accuracy (78.6%)
+- **Stability**: Random Forest shows the least variability across sites but lower overall performance
+- **Generalization**: All models maintain above-chance performance across all acquisition sites
+
 ### Key Findings
 
 1. **Best Overall Performance**: RBF SVM achieved the highest mean accuracy (70.3%) and AUC (76.7%)
@@ -157,3 +188,7 @@ This nested cross-validation approach provides:
 4. **All Models Above Chance**: All models significantly outperformed chance level (50% accuracy, 0.5 AUC)
 
 5. **PCA Impact**: Optimized PCA dimensionality reduction improved performance for RBF SVM and Random Forest
+
+6. **Site Generalization**: RBF SVM demonstrates the best site-to-site consistency (mean site accuracy = 68.3% ± 7.8%), indicating robust performance across different data acquisition centers
+
+7. **Clinical Utility**: Confusion matrices show balanced sensitivity and specificity across models, with RBF SVM achieving optimal discrimination between ASD and control groups

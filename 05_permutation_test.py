@@ -501,6 +501,7 @@ plt.savefig(f'permutation_test_results_n{N_PERMUTATIONS}.png', dpi=300, bbox_inc
 plt.show()
 
 print("\n" + "="*60)
+
 print("PERMUTATION TEST COMPLETE!")
 print("="*60)
 print(f"\nGenerated files:")

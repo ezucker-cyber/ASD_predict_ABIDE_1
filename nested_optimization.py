@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import roc_curve, auc, accuracy_score, roc_auc_score
+from sklearn.metrics import roc_curve, auc, accuracy_score, roc_auc_score, confusion_matrix
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -273,10 +273,10 @@ print("="*60)
 
 # Store results for all outer folds
 all_results = {
-    'Linear SVM': {'accuracy': [], 'auc': [], 'y_true': [], 'y_pred_proba': []},
-    'RBF SVM': {'accuracy': [], 'auc': [], 'y_true': [], 'y_pred_proba': []},
-    'Random Forest': {'accuracy': [], 'auc': [], 'y_true': [], 'y_pred_proba': []},
-    'Neural Network': {'accuracy': [], 'auc': [], 'y_true': [], 'y_pred_proba': []}
+    'Linear SVM': {'accuracy': [], 'auc': [], 'y_true': [], 'y_pred_proba': [], 'y_pred': [], 'site_id': []},
+    'RBF SVM': {'accuracy': [], 'auc': [], 'y_true': [], 'y_pred_proba': [], 'y_pred': [], 'site_id': []},
+    'Random Forest': {'accuracy': [], 'auc': [], 'y_true': [], 'y_pred_proba': [], 'y_pred': [], 'site_id': []},
+    'Neural Network': {'accuracy': [], 'auc': [], 'y_true': [], 'y_pred_proba': [], 'y_pred': [], 'site_id': []}
 }
 
 # Store best parameters from each fold
@@ -307,6 +307,7 @@ for outer_fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(
     
     X_test_outer = test_df.drop(columns=["id", "SITE_ID", "ASD", "stratify_var"]).values
     y_test_outer = test_df["ASD"].values
+    site_ids_test = test_df["SITE_ID"].values  # Store site IDs for per-site analysis
     
     print(f"\nTrain: {X_train_outer.shape}, Test: {X_test_outer.shape}")
     
@@ -489,6 +490,8 @@ for outer_fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(
     all_results['Linear SVM']['auc'].append(auc_score)
     all_results['Linear SVM']['y_true'].extend(y_test_outer.tolist())
     all_results['Linear SVM']['y_pred_proba'].extend(y_pred_proba.tolist())
+    all_results['Linear SVM']['y_pred'].extend(y_pred.tolist())
+    all_results['Linear SVM']['site_id'].extend(site_ids_test.tolist())
     print(f"  Accuracy: {acc:.4f}, AUC: {auc_score:.4f}")
     
     # RBF SVM
@@ -517,6 +520,8 @@ for outer_fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(
     all_results['RBF SVM']['auc'].append(auc_score)
     all_results['RBF SVM']['y_true'].extend(y_test_outer.tolist())
     all_results['RBF SVM']['y_pred_proba'].extend(y_pred_proba.tolist())
+    all_results['RBF SVM']['y_pred'].extend(y_pred.tolist())
+    all_results['RBF SVM']['site_id'].extend(site_ids_test.tolist())
     print(f"  Accuracy: {acc:.4f}, AUC: {auc_score:.4f}")
     
     # Random Forest
@@ -543,6 +548,8 @@ for outer_fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(
     all_results['Random Forest']['auc'].append(auc_score)
     all_results['Random Forest']['y_true'].extend(y_test_outer.tolist())
     all_results['Random Forest']['y_pred_proba'].extend(y_pred_proba.tolist())
+    all_results['Random Forest']['y_pred'].extend(y_pred.tolist())
+    all_results['Random Forest']['site_id'].extend(site_ids_test.tolist())
     print(f"  Accuracy: {acc:.4f}, AUC: {auc_score:.4f}")
     
     # Neural Network
@@ -571,6 +578,8 @@ for outer_fold_idx, (train_idx, test_idx) in enumerate(outer_cv.split(
     all_results['Neural Network']['auc'].append(auc_score)
     all_results['Neural Network']['y_true'].extend(y_test_outer.tolist())
     all_results['Neural Network']['y_pred_proba'].extend(y_pred_proba.tolist())
+    all_results['Neural Network']['y_pred'].extend(y_pred.tolist())
+    all_results['Neural Network']['site_id'].extend(site_ids_test.tolist())
     print(f"  Accuracy: {acc:.4f}, AUC: {auc_score:.4f}")
 
 # ============================================================
@@ -699,6 +708,168 @@ plt.tight_layout()
 plt.savefig('nested_cv_roc_curves.png', dpi=300, bbox_inches='tight')
 plt.show()
 
+# ============================================================
+# Confusion Matrices
+# ============================================================
+fig, axes = plt.subplots(1, 4, figsize=(20, 4))
+
+for idx, model_name in enumerate(model_names):
+    y_true = np.array(all_results[model_name]['y_true'])
+    y_pred = np.array(all_results[model_name]['y_pred'])
+    
+    cm = confusion_matrix(y_true, y_pred)
+    
+    # Plot confusion matrix
+    ax = axes[idx]
+    im = ax.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+    ax.figure.colorbar(im, ax=ax)
+    
+    # Labels
+    ax.set(xticks=np.arange(cm.shape[1]),
+           yticks=np.arange(cm.shape[0]),
+           xticklabels=['Control', 'ASD'],
+           yticklabels=['Control', 'ASD'],
+           ylabel='True Label',
+           xlabel='Predicted Label')
+    
+    # Rotate x labels
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    
+    # Add text annotations
+    thresh = cm.max() / 2.
+    for i in range(cm.shape[0]):
+        for j in range(cm.shape[1]):
+            ax.text(j, i, format(cm[i, j], 'd'),
+                   ha="center", va="center",
+                   color="white" if cm[i, j] > thresh else "black",
+                   fontsize=14, fontweight='bold')
+    
+    # Calculate metrics for title
+    tn, fp, fn, tp = cm.ravel()
+    sensitivity = tp / (tp + fn) if (tp + fn) > 0 else 0
+    specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
+    
+    ax.set_title(f'{model_name}\nSens: {sensitivity:.3f} | Spec: {specificity:.3f}',
+                fontsize=12, fontweight='bold')
+
+plt.tight_layout()
+plt.savefig('nested_cv_confusion_matrices.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# ============================================================
+# Per-Site Performance Analysis
+# ============================================================
+print("\n" + "="*60)
+print("PER-SITE PERFORMANCE ANALYSIS")
+print("="*60)
+
+# Create DataFrame for site analysis
+site_analysis_data = []
+
+for model_name in model_names:
+    y_true = np.array(all_results[model_name]['y_true'])
+    y_pred = np.array(all_results[model_name]['y_pred'])
+    site_ids = np.array(all_results[model_name]['site_id'])
+    
+    # Get unique sites
+    unique_sites = np.unique(site_ids)
+    
+    for site in unique_sites:
+        site_mask = site_ids == site
+        site_true = y_true[site_mask]
+        site_pred = y_pred[site_mask]
+        
+        if len(site_true) > 0:
+            site_acc = accuracy_score(site_true, site_pred)
+            site_n = len(site_true)
+            
+            site_analysis_data.append({
+                'Model': model_name,
+                'Site': site,
+                'Accuracy': site_acc,
+                'N_Samples': site_n
+            })
+
+site_df = pd.DataFrame(site_analysis_data)
+
+# Save to CSV
+site_df.to_csv('nested_cv_site_performance.csv', index=False)
+print("\nPer-site performance saved to 'nested_cv_site_performance.csv'")
+
+# Print summary
+print("\nPer-site performance summary:")
+for model_name in model_names:
+    model_site_df = site_df[site_df['Model'] == model_name]
+    print(f"\n{model_name}:")
+    print(f"  Mean site accuracy: {model_site_df['Accuracy'].mean():.4f} ± {model_site_df['Accuracy'].std():.4f}")
+    print(f"  Min: {model_site_df['Accuracy'].min():.4f}, Max: {model_site_df['Accuracy'].max():.4f}")
+
+# Visualization: Per-site performance for best model (RBF SVM)
+best_model = 'RBF SVM'
+best_model_site_df = site_df[site_df['Model'] == best_model].sort_values('Accuracy', ascending=False)
+
+fig, ax = plt.subplots(figsize=(14, 6))
+
+sites = best_model_site_df['Site'].values
+accuracies = best_model_site_df['Accuracy'].values
+sample_counts = best_model_site_df['N_Samples'].values
+
+# Color bars by accuracy
+colors = plt.cm.RdYlGn(accuracies)
+
+bars = ax.bar(range(len(sites)), accuracies, color=colors, alpha=0.8, edgecolor='black')
+
+# Add sample count labels on bars
+for i, (bar, n) in enumerate(zip(bars, sample_counts)):
+    height = bar.get_height()
+    ax.text(bar.get_x() + bar.get_width()/2., height + 0.01,
+            f'n={n}', ha='center', va='bottom', fontsize=8)
+
+ax.set_xlabel('Site', fontsize=12, fontweight='bold')
+ax.set_ylabel('Accuracy', fontsize=12, fontweight='bold')
+ax.set_title(f'Per-Site Performance: {best_model}\n(Aggregated across all 5 folds)', 
+            fontsize=14, fontweight='bold')
+ax.set_xticks(range(len(sites)))
+ax.set_xticklabels(sites, rotation=45, ha='right')
+ax.set_ylim([0, 1])
+ax.axhline(y=0.5, color='r', linestyle='--', linewidth=1, alpha=0.5, label='Chance')
+ax.axhline(y=accuracies.mean(), color='b', linestyle='--', linewidth=2, 
+           alpha=0.7, label=f'Mean = {accuracies.mean():.3f}')
+ax.legend()
+ax.grid(axis='y', alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('nested_cv_site_performance.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Visualization: All models comparison by site (for sites with >10 samples)
+large_sites = site_df.groupby('Site')['N_Samples'].sum()
+large_sites = large_sites[large_sites >= 20].index.tolist()  # Sites with at least 20 total samples
+
+if len(large_sites) > 0:
+    fig, ax = plt.subplots(figsize=(14, 6))
+    
+    site_model_pivot = site_df[site_df['Site'].isin(large_sites)].pivot(
+        index='Site', columns='Model', values='Accuracy'
+    )
+    
+    site_model_pivot.plot(kind='bar', ax=ax, width=0.8, alpha=0.8)
+    
+    ax.set_xlabel('Site', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Accuracy', fontsize=12, fontweight='bold')
+    ax.set_title('Model Performance by Site (Sites with ≥20 samples)', 
+                fontsize=14, fontweight='bold')
+    ax.set_ylim([0, 1])
+    ax.axhline(y=0.5, color='r', linestyle='--', linewidth=1, alpha=0.5, label='Chance')
+    ax.legend(title='Model', loc='lower right')
+    ax.grid(axis='y', alpha=0.3)
+    plt.xticks(rotation=45, ha='right')
+    
+    plt.tight_layout()
+    plt.savefig('nested_cv_site_comparison.png', dpi=300, bbox_inches='tight')
+    plt.show()
+
+
 print("\n" + "="*60)
 print("NESTED CV COMPLETE!")
 print("="*60)
@@ -707,3 +878,7 @@ print("  - nested_cv_results.csv")
 print("  - nested_cv_best_params.json")
 print("  - nested_cv_results.png")
 print("  - nested_cv_roc_curves.png")
+print("  - nested_cv_confusion_matrices.png")
+print("  - nested_cv_site_performance.csv")
+print("  - nested_cv_site_performance.png")
+print("  - nested_cv_site_comparison.png")
