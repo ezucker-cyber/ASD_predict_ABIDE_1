@@ -857,7 +857,7 @@ if len(large_sites) > 0:
     
     ax.set_xlabel('Site', fontsize=12, fontweight='bold')
     ax.set_ylabel('Accuracy', fontsize=12, fontweight='bold')
-    ax.set_title('Model Performance by Site (Sites with ≥20 samples)', 
+    ax.set_title('Model Performance by Site', 
                 fontsize=14, fontweight='bold')
     ax.set_ylim([0, 1])
     ax.axhline(y=0.5, color='r', linestyle='--', linewidth=1, alpha=0.5, label='Chance')
