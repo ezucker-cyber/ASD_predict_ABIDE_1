@@ -2,7 +2,11 @@
 
 ## Data Preprocessing
 
-• **Feature Extraction**: Extracted upper-triangular elements from correlation matrices (CC200 atlas), yielding connectivity features for each participant
+• **Dataset**: ABIDE-I (Autism Brain Imaging Data Exchange) with data from **17 independent acquisition sites** across North America and Europe
+
+• **Sample Size**: 1,010 participants after balancing (505 ASD, 505 Controls)
+
+• **Feature Extraction**: Extracted upper-triangular elements from correlation matrices (CC200 atlas), yielding 19,900 connectivity features for each participant
 
 • **Class Balancing**: Balanced the dataset by removing excess control samples using site-stratified random sampling to maintain proportional representation across acquisition sites
 
@@ -105,8 +109,6 @@ This nested cross-validation approach provides:
 
 ## Results
 
-![Model Performance](nested_cv_results.png)
-
 ### Overall Performance (Mean ± Standard Deviation)
 
 | Model | Accuracy | AUC-ROC |
@@ -114,7 +116,7 @@ This nested cross-validation approach provides:
 | Linear SVM | 0.685 ± 0.030 (SE: 0.013) | 0.758 ± 0.029 (SE: 0.013) |
 | **RBF SVM** | **0.703 ± 0.029 (SE: 0.013)** | **0.767 ± 0.025 (SE: 0.011)** |
 | Random Forest | 0.631 ± 0.062 (SE: 0.028) | 0.741 ± 0.027 (SE: 0.012) |
-| Neural Network | 0.680 ± 0.018 (SE: 0.008) | 0.757 ± 0.024 (SE: 0.011) |
+| Neural Network | 0.671 ± 0.020 (SE: 0.009) | 0.750 ± 0.018 (SE: 0.008) |
 
 ### Detailed Results by Fold
 
@@ -140,11 +142,11 @@ This nested cross-validation approach provides:
 - Fold 5: Accuracy = 0.723, AUC = 0.768
 
 #### Neural Network
-- Fold 1: Accuracy = 0.663, AUC = 0.729
-- Fold 2: Accuracy = 0.708, AUC = 0.786
-- Fold 3: Accuracy = 0.693, AUC = 0.780
-- Fold 4: Accuracy = 0.658, AUC = 0.730
-- Fold 5: Accuracy = 0.678, AUC = 0.758
+- Fold 1: Accuracy = 0.663, AUC = 0.723
+- Fold 2: Accuracy = 0.668, AUC = 0.765
+- Fold 3: Accuracy = 0.703, AUC = 0.773
+- Fold 4: Accuracy = 0.644, AUC = 0.738
+- Fold 5: Accuracy = 0.678, AUC = 0.748
 
 ### Confusion Matrices
 
@@ -171,19 +173,19 @@ This nested cross-validation approach provides:
 | Linear SVM | 0.672 ± 0.091 | [0.483, 0.846] |
 | **RBF SVM** | **0.683 ± 0.078** | **[0.510, 0.760]** |
 | Random Forest | 0.609 ± 0.062 | [0.517, 0.723] |
-| Neural Network | 0.682 ± 0.068 | [0.552, 0.786] |
+| Neural Network | 0.666 ± 0.073 | [0.517, 0.757] |
 
 **Site-Level Observations:**
 - **Consistency**: RBF SVM shows the most consistent performance across sites (SD = 0.078)
-- **Peak Performance**: Neural Network achieves the highest maximum site accuracy (78.6%)
+- **Peak Performance**: Linear SVM achieves the highest maximum site accuracy (84.6%)
 - **Stability**: Random Forest shows the least variability across sites but lower overall performance
-- **Generalization**: All models maintain above-chance performance across all acquisition sites
+- **Generalization**: All models maintain above-chance performance across all 17 acquisition sites
 
 ### Key Findings
 
 1. **Best Overall Performance**: RBF SVM achieved the highest mean accuracy (70.3%) and AUC (76.7%)
 
-2. **Most Consistent Performance**: Neural Network showed the lowest variability (SD = 0.018 for accuracy)
+2. **Most Consistent Performance**: Neural Network showed the lowest variability (SD = 0.020 for accuracy)
 
 3. **Most Variable Performance**: Random Forest exhibited the highest variability (SD = 0.062 for accuracy)
 
