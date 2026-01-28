@@ -105,6 +105,8 @@ This nested cross-validation approach provides:
 
 ## Results
 
+![Permutation Test Results](nested_cv_results.png)
+
 ### Overall Performance (Mean ± Standard Deviation)
 
 | Model | Accuracy | AUC-ROC |

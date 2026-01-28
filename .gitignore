@@ -10,6 +10,7 @@
 !requirements.txt
 !05_permutation_test.py
 !permutation_test_results_n50.png
+!nested_cv_results.png
 
 # Ignore directories
 asd_pred_venv/
