@@ -1,0 +1,2 @@
+Model,P_Value_Perm,AUC_Mean,AUC_STD,ACC_Mean,ACC_STD,F1_Mean,F1_STD,Sens_Mean,Sens_STD,Spec_Mean,Spec_STD,TN,FP,FN,TP
+TS_Riemann_LinSVM,0.0196,0.778,0.031,0.7,0.033,0.685,0.03,0.669,0.031,0.729,0.058,386,144,167,338

@@ -1,0 +1,2 @@
+Model,P_Value_Perm,AUC_Mean,AUC_STD,ACC_Mean,ACC_STD,F1_Mean,F1_STD,Sens_Mean,Sens_STD,Spec_Mean,Spec_STD,TN,FP,FN,TP
+Thr0.2_Comb_LogReg,0.0196,0.637,0.025,0.616,0.017,0.624,0.031,0.656,0.06,0.579,0.027,307,223,174,331
