@@ -1,0 +1,2 @@
+Model,P_Value_Perm,AUC_Mean,AUC_STD,ACC_Mean,ACC_STD,F1_Mean,F1_STD,Sens_Mean,Sens_STD,Spec_Mean,Spec_STD,TN,FP,FN,TP
+TS_Riemann_LogReg,0.0196,0.783,0.03,0.721,0.045,0.705,0.045,0.683,0.047,0.757,0.07,401,129,160,345

@@ -1,0 +1,2 @@
+Model,P_Value_Perm,AUC_Mean,AUC_STD,ACC_Mean,ACC_STD,F1_Mean,F1_STD,Sens_Mean,Sens_STD,Spec_Mean,Spec_STD,TN,FP,FN,TP
+Thr0.2_Pos_LogReg,0.0196,0.618,0.037,0.596,0.037,0.595,0.04,0.608,0.045,0.585,0.047,310,220,198,307

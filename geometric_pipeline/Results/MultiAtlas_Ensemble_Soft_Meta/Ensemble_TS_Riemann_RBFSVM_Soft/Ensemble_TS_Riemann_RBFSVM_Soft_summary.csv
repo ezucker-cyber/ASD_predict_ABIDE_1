@@ -1,0 +1,2 @@
+Model,P_Val,ACC,AUC,Sens,Spec,TN,FP,FN,TP
+Ensemble_TS_Riemann_RBFSVM_Soft,0.0196,0.711,0.77,0.671,0.749,397,133,166,339

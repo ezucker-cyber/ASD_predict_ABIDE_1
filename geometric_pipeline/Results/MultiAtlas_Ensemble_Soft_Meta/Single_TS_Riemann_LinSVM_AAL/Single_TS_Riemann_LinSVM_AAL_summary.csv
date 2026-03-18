@@ -1,0 +1,2 @@
+Model,P_Val,ACC,AUC,Sens,Spec,TN,FP,FN,TP
+Single_TS_Riemann_LinSVM_AAL,0.0196,0.671,0.728,0.655,0.685,363,167,174,331
