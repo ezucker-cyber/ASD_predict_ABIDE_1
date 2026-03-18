@@ -13,12 +13,11 @@ Finally:
 Place both the folder and the CSV in the same directory as these scripts before running anything.
 
 ### Attribution
-The logic for directory navigation, subject ID normalization, and linking the `.1D` atlas files to the phenotypic metadata is built on and partially taken from the implementation in **ASD-GraphNet** by [Mina Zeraati and Amirehsan Davoodi]. We use their framework for data ingestion before processing the connectivity matrices through our geometric framework.
+The logic for directory navigation, subject ID normalization, and linking the `.1D` atlas files to the phenotypic metadata is built on and partially taken from the implementation in **ASD-GraphNet** by [Mina Zeraati and Amirehsan Davoodi]. We use their framework for data handling before processing the connectivity matrices through our geometric framework.
 
 For all the specific pre-processing steps used by these authors, see their publication: 
 Zeraati, M., & Davoodi, A. (2025). ASD-GraphNet: A novel graph learning         approach for Autism Spectrum Disorder diagnosis using fMRI data. Computers in Biology and Medicine, 196(Pt B), 110723. https://doi.org/10.1016/j.compbiomed.2025.110723
 
-GitHub citation: 
 
 
 ## Execution Order
